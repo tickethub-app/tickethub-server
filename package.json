@@ -1,0 +1,20 @@
+{
+  "name": "tickethub-server",
+  "version": "1.0.0",
+  "description": "Tickethub app backend",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "tsx watch src/server.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "tsx": "^3.12.7",
+    "typescript": "^5.1.6"
+  },
+  "dependencies": {
+    "fastify": "^4.21.0"
+  }
+}
