@@ -1,9 +1,14 @@
 #!/usr/bin/python3
-
-from models.base_model import BaseModel
+from models import storage
+from models.base_model import BaseModel, Base
+from models.organisation import Organisation
 
 base = BaseModel()
+Base.metadata.create_all()
+organisation = Organisation()
+organisation.name ="Ussumane"
+organisation.password = "Test"
+organisation.email = "Email"
 
-print(base)
-
-print(base.to_dict())
+storage.new(organisation)
+storage.save()

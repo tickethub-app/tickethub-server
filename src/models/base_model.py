@@ -1,11 +1,18 @@
 #!/usr/bin/python3
 """base model class"""
 from datetime import datetime
+from sqlalchemy import Column, String, DateTime
+from sqlalchemy.ext.declarative import declarative_base
 from uuid import uuid4
 
+Base = declarative_base()
 
 class BaseModel:
     """"""
+
+    id = Column(String(60), primary_key=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow)
     def __init__(self, *args, **kwargs):
         """base model constructor"""
         self.id = str(uuid4())
