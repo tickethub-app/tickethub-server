@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """DBStorage class"""
-from models.base_model import Base
+from models.base_model import BaseModel, Base
 from os import getenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
