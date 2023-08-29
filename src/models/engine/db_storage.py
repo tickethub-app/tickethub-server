@@ -35,10 +35,14 @@ class DBStorage:
 
     def all(self, cls=None):
         """Receives all data of a class"""
-        print(cls.__class__)
-        objs = self.__session.query(Organisation).all()
-        allObjs = [obj.to_dict() for obj in objs]
-        return allObjs
+        if cls is not None:
+            objs = []
+            for key, value in classes.items():
+                if cls is classes[key]:
+                    objs = self.__session.query(cls).all()
+            allObjs = [obj.to_dict() for obj in objs]
+            return allObjs
+        return []
 
     def reload(self):
         """reload the database conection"""
