@@ -7,7 +7,7 @@ class Organisation(BaseModel, Base):
     __tablename__ = "organisations"
     
     name = Column(String(128), nullable=False)
-    email = Column(String(128), nullable=False)
+    email = Column(String(128), nullable=False, unique=True)
     password = Column(String(128), nullable=False)
 
     def __init__(self, *args, **kwargs):

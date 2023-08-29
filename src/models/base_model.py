@@ -19,14 +19,22 @@ class BaseModel:
         self.created_at = datetime.utcnow()
         self.updated_at = self.created_at
 
-
     def __str__(self):
         """to string method"""
         return "[{}] ({}) {}".format(self.__class__.__name__, self.id, self.__dict__)
 
     def save(self):
         """default save method"""
-        self.updated_at = datetime.now()
+        from models import storage
+        self.updated_at = datetime.utcnow()
+        storage.new(self)
+        storage.save()
+    
+    def delete(self):
+        """Delete the object from the session"""
+        from models import storage
+        storage.delete(self)
+        storage.save()
     
     def to_dict(self):
         """transforms the current object into dict"""

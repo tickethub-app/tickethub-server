@@ -19,13 +19,6 @@ class DBStorage:
         HUB_PSQL_PORT = getenv("HUB_PSQL_PORT")
         HUB_PSQL_DB = getenv("HUB_PSQL_DB")
         HUB_ENV = getenv("HUB_ENV")
-        print("postgresql://{}:{}@{}:{}/{}".format(
-            HUB_PSQL_USER,
-            HUB_PSQL_PWD,
-            HUB_PSQL_HOST,
-            HUB_PSQL_PORT,
-            HUB_PSQL_DB
-        ))
         self.__engine = create_engine("postgresql://{}:{}@{}:{}/{}".format(
             HUB_PSQL_USER,
             HUB_PSQL_PWD,
@@ -33,6 +26,8 @@ class DBStorage:
             HUB_PSQL_PORT,
             HUB_PSQL_DB
         ))
+        if HUB_ENV == "test":
+            Base.metadata.drop_all(self.__engine)
 
     def reload(self):
         """reload the database conection"""
@@ -46,4 +41,14 @@ class DBStorage:
         self.__session.add(obj)
 
     def save(self):
+        """Commits all the changes"""
         self.__session.commit()
+    
+    def delete(self, obj):
+        """removes the object from the current session"""
+        if obj is not None:
+            self.__session.delete(obj)
+
+    def close(self):
+        """closes the session"""
+        self.__session.remove()
