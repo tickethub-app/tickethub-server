@@ -1,9 +1,13 @@
 #!/usr/bin/python3
 """DBStorage class"""
 from models.base_model import BaseModel, Base
+from models.organisation import Organisation
 from os import getenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
+
+
+classes = {"Organisation": Organisation}
 
 
 class DBStorage:
@@ -29,10 +33,22 @@ class DBStorage:
         if HUB_ENV == "test":
             Base.metadata.drop_all(self.__engine)
 
+    def all(self, cls=None):
+        """Receives all data of a class"""
+        if cls is not None:
+            objs = []
+            for key, value in classes.items():
+                if cls is classes[key]:
+                    objs = self.__session.query(cls).all()
+            allObjs = [obj.to_dict() for obj in objs]
+            return allObjs
+        return []
+
     def reload(self):
         """reload the database conection"""
         Base.metadata.create_all(self.__engine)
-        session_factory = sessionmaker(bind=self.__engine, expire_on_commit=False)
+        session_factory = sessionmaker(bind=self.__engine,
+                                       expire_on_commit=False)
         Session = scoped_session(session_factory)
         self.__session = Session
 
