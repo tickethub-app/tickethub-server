@@ -59,7 +59,7 @@ def update_organisation(id):
     org = storage.get(Organisation, id)
     if org is None:
         abort(404)
-    ignore = ['id', 'email', 'created_at', 'updated_at']
+    ignore = ['id', 'email', 'password', 'created_at', 'updated_at']
     data = request.get_json()
     for key, value in data.items():
         if key not in ignore:
