@@ -2,12 +2,14 @@
 """DBStorage class"""
 from models.base_model import BaseModel, Base
 from models.organisation import Organisation
+from models.event import Event
+from models.ticket import Ticket
 from os import getenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
 
 
-classes = {"Organisation": Organisation}
+classes = {"Organisation": Organisation, "Event": Event, "Ticket": Ticket}
 
 
 class DBStorage:

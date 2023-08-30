@@ -45,7 +45,7 @@ class BaseModel:
     
     def to_dict(self):
         """transforms the current object into dict"""
-        dictionary = self.__dict__
+        dictionary = dict(self.__dict__)
         dictionary.pop("_sa_instance_state", None)
-        return self.__dict__
+        return dictionary
     
