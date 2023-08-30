@@ -40,9 +40,19 @@ class DBStorage:
             for key, value in classes.items():
                 if cls is classes[key]:
                     objs = self.__session.query(cls).all()
-            allObjs = [obj.to_dict() for obj in objs]
+            allObjs = [obj for obj in objs]
             return allObjs
         return []
+    
+    def get(self, cls, id):
+        """get specific object of a class"""
+        from models import storage
+        if cls not in classes.values():
+            return None
+        all_objs = storage.all(cls)
+        for obj in all_objs:
+            if obj.id == id:
+                return obj
 
     def reload(self):
         """reload the database conection"""
