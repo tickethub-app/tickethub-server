@@ -71,4 +71,8 @@ def update_organisation(id):
 @app_routes.route("/organisations/<id>", methods=["DELETE"])
 def delete_organisation(id):
     """Deletes a organisation"""
-    return jsonify({})
+    org = storage.get(Organisation, id)
+    if org is None:
+        abort(404)
+    org.delete()
+    return jsonify({"status": "success", "message": "Organisation removed with success!"})
