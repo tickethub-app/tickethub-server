@@ -8,7 +8,7 @@ from sqlalchemy.exc import IntegrityError
 
 
 @app_routes.route("/organisations", strict_slashes=False)
-def index():
+def all_organisations():
     """Gets all organisation"""
     organisations = storage.all(Organisation)
     all_orgs = [org.to_dict() for org in organisations]
