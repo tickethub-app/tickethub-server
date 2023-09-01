@@ -10,7 +10,7 @@ def all_tickets():
     formated = [ticket.to_dict() for ticket in all_tickets]
     return jsonify({"status": "success", "data": formated})
 
-@app_routes.route("/ticket/<ticket_id>", strict_slashes=False)
+@app_routes.route("/tickets/<ticket_id>", strict_slashes=False)
 def get_ticket(ticket_id):
   """Get specific ticket"""
   ticket = storage.get(Ticket, ticket_id)
@@ -25,6 +25,7 @@ def create_ticket():
    if request_data is None:
       return jsonify({"status": "error", "message": "No data sent"}), 400
    new_ticket = Ticket(**request_data)
+   new_ticket.save()
    return jsonify({"status": "success", "data": new_ticket.to_dict()}), 201
 
 @app_routes.route("/tickets/<ticket_id>", methods=["PUT"], strict_slashes=False)
@@ -36,8 +37,10 @@ def update_ticket(ticket_id):
    data = request.get_json()
    if data is None:
       return jsonify({"status": "error", "message": "No data sent"}), 400
+   ignore =  ["event_id"]
    for key, value in data.items():
-      setattr(ticket, key, value)
+      if key not in ignore:
+        setattr(ticket, key, value)
    ticket.save()
    return jsonify({"status": "success", "message":"ticket updated with success", "data": ticket.to_dict()})
 
