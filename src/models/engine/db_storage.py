@@ -2,12 +2,14 @@
 """DBStorage class"""
 from models.base_model import BaseModel, Base
 from models.organisation import Organisation
+from models.event import Event
+from models.ticket import Ticket
 from os import getenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
 
 
-classes = {"Organisation": Organisation}
+classes = {"Organisation": Organisation, "Event": Event, "Ticket": Ticket}
 
 
 class DBStorage:
@@ -23,15 +25,16 @@ class DBStorage:
         HUB_PSQL_PORT = getenv("HUB_PSQL_PORT")
         HUB_PSQL_DB = getenv("HUB_PSQL_DB")
         HUB_ENV = getenv("HUB_ENV")
-        self.__engine = create_engine("postgresql://{}:{}@{}:{}/{}".format(
-            HUB_PSQL_USER,
-            HUB_PSQL_PWD,
-            HUB_PSQL_HOST,
-            HUB_PSQL_PORT,
-            HUB_PSQL_DB
-        ))
-        if HUB_ENV == "test":
-            Base.metadata.drop_all(self.__engine)
+        self.__engine = create_engine("mysql://root:@localhost:3306/ticket_hub_dev" )
+        # .format(
+        #     HUB_PSQL_USER,
+        #     HUB_PSQL_PWD,
+        #     HUB_PSQL_HOST,
+        #     HUB_PSQL_PORT,
+        #     HUB_PSQL_DB
+        # ))
+        # if HUB_ENV == "test":
+        #     Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
         """Receives all data of a class"""
@@ -40,9 +43,19 @@ class DBStorage:
             for key, value in classes.items():
                 if cls is classes[key]:
                     objs = self.__session.query(cls).all()
-            allObjs = [obj.to_dict() for obj in objs]
+            allObjs = [obj for obj in objs]
             return allObjs
         return []
+    
+    def get(self, cls, id):
+        """get specific object of a class"""
+        from models import storage
+        if cls not in classes.values():
+            return None
+        all_objs = storage.all(cls)
+        for obj in all_objs:
+            if obj.id == id:
+                return obj
 
     def reload(self):
         """reload the database conection"""

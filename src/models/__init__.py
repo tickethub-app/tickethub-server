@@ -2,6 +2,8 @@
 from dotenv import load_dotenv
 from models.base_model import BaseModel, Base
 from models.organisation import Organisation
+from models.event import Event
+from models.ticket import Ticket
 from models.engine.db_storage import DBStorage
 
 load_dotenv()

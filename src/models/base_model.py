@@ -15,9 +15,16 @@ class BaseModel:
     
     def __init__(self, *args, **kwargs):
         """base model constructor"""
-        self.id = str(uuid4())
-        self.created_at = datetime.utcnow()
-        self.updated_at = self.created_at
+        if kwargs:
+            for key, value in kwargs.items():
+                if key != "__class__":
+                    setattr(self, key, value)
+            if kwargs.get("id", None) is None:
+                self.id = str(uuid4())
+        else:
+            self.id = str(uuid4())
+            self.created_at = datetime.utcnow()
+            self.updated_at = self.created_at
 
     def __str__(self):
         """to string method"""
@@ -38,7 +45,7 @@ class BaseModel:
     
     def to_dict(self):
         """transforms the current object into dict"""
-        dictionary = self.__dict__
+        dictionary = dict(self.__dict__)
         dictionary.pop("_sa_instance_state", None)
-        return self.__dict__
+        return dictionary
     
