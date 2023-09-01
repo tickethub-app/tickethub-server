@@ -6,7 +6,7 @@ from models.organisation import Organisation
 from random import randint
 
 
-variables = {"name": "ussumane", 
+variables = { 
     "date": "2023-08-15 14:30:00", 
     "start_time": "09:00:00",
     "end_time": "12:00:00",
@@ -16,11 +16,7 @@ variables = {"name": "ussumane",
     "organisation_id": "1",
     }
 
-organisation = Organisation(**variables)
-organisation.save()
-print(organisation.to_dict())
-
-# obj = storage.get(Organisation, "2bb6fb9d-51e0-4e9c-b650-3064809f013a")
-# print(obj)
-
-print(storage.all(Organisation))
+new_event = Event(**variables)
+storage.new(new_event)
+new_event.save()
+# print(event.to_dict())
