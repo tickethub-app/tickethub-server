@@ -1,10 +1,12 @@
 #!/usr/bin/python3
 """Main Entrance for the api"""
 from flask import Flask, jsonify
+from flask_cors import CORS
 from models import storage
 from api.v1.routes import app_routes
 
 app = Flask(__name__)
+CORS(app)
 
 app.register_blueprint(app_routes)
 
@@ -22,4 +24,4 @@ def not_found(error):
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=5000, debug=True)
