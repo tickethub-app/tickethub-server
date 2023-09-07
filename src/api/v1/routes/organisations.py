@@ -55,7 +55,7 @@ def create_organisation():
 
 
 @app_routes.route("/organisations/<id>", methods=["PUT"],
-                  strict_slashes=False)
+                strict_slashes=False)
 def update_organisation(id):
     """updates a organisation"""
     org = storage.get(Organisation, id)

@@ -16,4 +16,4 @@ print(organisation.to_dict())
 # obj = storage.get(Organisation, "2bb6fb9d-51e0-4e9c-b650-3064809f013a")
 # print(obj)
 
-#print(storage.all(Organisation))
+print(storage.all(Organisation))

@@ -25,7 +25,7 @@ class DBStorage:
         HUB_PSQL_PORT = getenv("HUB_PSQL_PORT")
         HUB_PSQL_DB = getenv("HUB_PSQL_DB")
         HUB_ENV = getenv("HUB_ENV")
-        self.__engine = create_engine("postgresql://{}:{}@{}:{}/{}".format(
+        self.__engine = create_engine("postgresql://{}:{}@{}:{}/{}" .format(
             HUB_PSQL_USER,
             HUB_PSQL_PWD,
             HUB_PSQL_HOST,
@@ -45,7 +45,7 @@ class DBStorage:
             allObjs = [obj for obj in objs]
             return allObjs
         return []
-    
+
     def get(self, cls, id):
         """get specific object of a class"""
         from models import storage
@@ -84,7 +84,7 @@ class DBStorage:
     def save(self):
         """Commits all the changes"""
         self.__session.commit()
-    
+
     def delete(self, obj):
         """removes the object from the current session"""
         if obj is not None:
