@@ -1,12 +1,13 @@
 #!/usr/bin/python3
-import html , os , re
+import html
+import os
+import re
 from datetime import datetime, time
 from models import storage
 from models.event import Event
 from api.v1.routes import app_routes
-from flask import jsonify , abort , request
+from flask import jsonify, abort, request
 from werkzeug.utils import secure_filename
-
 
 
 @app_routes.route("/events", strict_slashes=False)
@@ -14,28 +15,31 @@ def index():
     "Get all events"
     events = storage.all(Event)
     all_events = [event.to_dict() for event in events]
-    return jsonify({"data": all_events}),200
+    return jsonify({"data": all_events}), 200
+
 
 @app_routes.route("/events/<id>", strict_slashes=False)
 def get_event(id):
     """Get a specific event using id"""
-    
+
     event = storage.get(Event, id)
     if event is None:
         abort(404)
-    return jsonify({"status": "success", "data":event.to_dict()}), 200
+    return jsonify({"status": "success", "data": event.to_dict()}), 200
 
-@app_routes.route("/events/search", method=["GET"],
-                    strict_slashes=False)
+
+@app_routes.route("/events/search", strict_slashes=False)
 def search_events():
     search_term = request.args.get("name")
-    
+
     if not search_term:
-        return jsonify({"status": "error", "message" : "No input search term"}), 400
-    
-    matching_events = storage.session.query(Event).filter(Event.name.islike(f"%{search_term}%")).all()
-    
-    event_data = [{"id": event.id, "topic": event.topic, "date": event.date} for event in matching_events]
+        return jsonify({"status": "error", "message": "No input search term"}), 400
+
+    matching_events = storage.session.query(Event).filter(
+        Event.name.islike(f"%{search_term}%")).all()
+
+    event_data = [{"id": event.id, "topic": event.topic,
+                   "date": event.date} for event in matching_events]
 
     return jsonify({"status": "success", "events": event_data}), 200
 
@@ -47,14 +51,16 @@ def create_event():
     image_file = request.files.get("image")
     if not data:
         return jsonify({"status": "error", "message": "No data provided"}), 400
-    
-    required_attributes = ["date" , "start_time", "end_time",  "number_tickets", "image", "description", "organisation_id" ]
-    
-    missing_attributes = [attr for attr in required_attributes if attr not in data ]
+
+    required_attributes = ["date", "start_time", "end_time",
+                           "number_tickets", "image", "description", "organisation_id"]
+
+    missing_attributes = [
+        attr for attr in required_attributes if attr not in data]
     if missing_attributes:
-        return jsonify({"status" : "error", "message": f"Missing an attribute:{','.join(missing_attributes)}"})
-    
-    #sanitizing input data to prevent XSS
+        return jsonify({"status": "error", "message": f"Missing an attribute:{','.join(missing_attributes)}"})
+
+    # sanitizing input data to prevent XSS
     cleaned_data = {
         "date": html.escape(data.get("date", "")),
         "start_time": html.escape(data.get("start_time", "")),
@@ -63,10 +69,10 @@ def create_event():
         "topic": html.escape(data.get("topic", "")),
         "description": html.escape(data.get("description", "")),
         "organisation_id": html.escape(data.get("organisation_id", ""))
-        
+
     }
-    
-    #validate data
+
+    # validate data
     if not re.match(r"\d{4}-\d{2}-\d{2}$", data.get("date", "")):
         return jsonify({"status": "error", "message": "Invalid date format"}), 400
 
@@ -82,31 +88,29 @@ def create_event():
             return jsonify({"status": "error", "message": "Number of tickets must be a positive integer"}), 400
     except ValueError:
         return jsonify({"status": "error", "message": "Invalid number of tickets"}), 400
-    
-    #save the uploaded image file
+
+    # save the uploaded image file
     if image_file:
         filename = secure_filename(image_file.filename)
         image_path = os.path.join("", filename)
         image_file.save(image_path)
         data["image"] = image_path
-        
-    new_event=Event(**cleaned_data)
+
+    new_event = Event(**cleaned_data)
     # print(new_event)
     storage.new(new_event)
     storage.save()
-    
-    return jsonify({"message" : "Event created successfully"}), 201
+
+    return jsonify({"message": "Event created successfully"}), 201
 
 
-@app_routes.route("/events/<id>", method=["PUT"],
-                    strict_slashes=False)
+@app_routes.route("/events/<id>", methods=["PUT"], strict_slashes=False)
 def update_event(id):
     """Updates  event"""
     return jsonify({})
 
-@app_routes.route("/events/<id>", method=["DELETE"])
+
+@app_routes.route("/events/<id>", methods=["DELETE"])
 def delete_event(id):
     """Delete event"""
     return jsonify({})
-
-
