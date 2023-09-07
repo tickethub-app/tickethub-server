@@ -9,3 +9,4 @@ app_routes = Blueprint("app_routes", __name__, url_prefix="/api/v1")
 from api.v1.routes.index import *
 from api.v1.routes.organisations import *
 from api.v1.routes.tickets import *
+from api.v1.routes.auth import *

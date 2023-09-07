@@ -16,7 +16,7 @@ class DBStorage:
     """Database storage class system"""
     __engine = None
     __session = None
-    
+
     def __init__(self):
         """Constructor of the DB Storage"""
         HUB_PSQL_USER = getenv("HUB_PSQL_USER")
@@ -45,7 +45,7 @@ class DBStorage:
             allObjs = [obj for obj in objs]
             return allObjs
         return []
-    
+
     def get(self, cls, id):
         """get specific object of a class"""
         from models import storage
@@ -54,6 +54,19 @@ class DBStorage:
         all_objs = storage.all(cls)
         for obj in all_objs:
             if obj.id == id:
+                return obj
+
+    def get_by_key(self, cls, key=None, value=None):
+        """Filtering a model by a key"""
+        from models import storage
+        if cls not in classes.values():
+            return None
+        if not key or not value:
+            return None
+        all_objs = storage.all(cls)
+        for obj in all_objs:
+            obj_dict = obj.to_dict()
+            if obj_dict.get(key) == value:
                 return obj
 
     def reload(self):
@@ -71,7 +84,7 @@ class DBStorage:
     def save(self):
         """Commits all the changes"""
         self.__session.commit()
-    
+
     def delete(self, obj):
         """removes the object from the current session"""
         if obj is not None:

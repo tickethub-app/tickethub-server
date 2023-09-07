@@ -5,6 +5,7 @@ from models.organisation import Organisation
 from api.v1.routes import app_routes
 from flask import jsonify, abort, request
 from sqlalchemy.exc import IntegrityError
+from hashlib import md5
 
 
 @app_routes.route("/organisations", strict_slashes=False)
@@ -40,8 +41,9 @@ def create_organisation():
     # Creates new Organisation
     try:
         new_org = Organisation(**data)
+        new_org.password = md5(data.get("password").encode()).hexdigest()
         new_org.save()
-        return jsonify(new_org.to_dict()), 201
+        return jsonify({"status": "success", "data": new_org.to_dict()}), 201
     except IntegrityError as e:
         error_message = str(e.orig)
         if "duplicate key value violates unique constraint" in error_message:

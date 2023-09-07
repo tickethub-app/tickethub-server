@@ -3,11 +3,13 @@ from models import storage
 from models.base_model import BaseModel, Base
 from models.organisation import Organisation
 from random import randint
+from hashlib import md5
 
-
-variables = {"name": "ussumane", "password": "ussboysensas", "email": "test@test.co.mz", "test": "new variable"}
+variables = {"name": "ussumane", "email": "test@test.co.mz", "test": "new variable"}
+password = md5("ussboy".encode()).hexdigest()
 
 organisation = Organisation(**variables)
+organisation.password = password
 organisation.save()
 print(organisation.to_dict())
 
