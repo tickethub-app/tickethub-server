@@ -20,7 +20,7 @@ def close_db(error):
 @app.errorhandler(404)
 def not_found(error):
     """Handling the 404 error"""
-    return jsonify({"status": "not found"}), 404
+    return jsonify({"status": "error", "message": "Route not found"}), 404
 
 
 if __name__ == "__main__":
