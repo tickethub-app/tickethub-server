@@ -53,12 +53,14 @@ def create_event():
         return jsonify({"status": "error", "message": "No data provided"}), 400
 
     required_attributes = ["date", "start_time", "end_time",
-                           "number_tickets", "image", "description", "organisation_id"]
+                           "number_tickets", "description", "organisation_id"]
 
     missing_attributes = [
         attr for attr in required_attributes if attr not in data]
+    if image_file is None:
+        missing_attributes.append('images')
     if missing_attributes:
-        return jsonify({"status": "error", "message": f"Missing an attribute:{','.join(missing_attributes)}"})
+        return jsonify({"status": "error", "message": f"Missing an attributes: {','.join(missing_attributes)}"})
 
     # sanitizing input data to prevent XSS
     cleaned_data = {
