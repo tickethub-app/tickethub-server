@@ -25,13 +25,14 @@ class DBStorage:
         HUB_PSQL_PORT = getenv("HUB_PSQL_PORT")
         HUB_PSQL_DB = getenv("HUB_PSQL_DB")
         HUB_ENV = getenv("HUB_ENV")
-        self.__engine = create_engine("postgresql://{}:{}@{}:{}/{}" .format(
-            HUB_PSQL_USER,
-            HUB_PSQL_PWD,
-            HUB_PSQL_HOST,
-            HUB_PSQL_PORT,
-            HUB_PSQL_DB
-        ))
+        self.__engine = create_engine("sqlite:///foo.db")
+        # self.__engine = create_engine("postgresql://{}:{}@{}:{}/{}" .format(
+        #     HUB_PSQL_USER,
+        #     HUB_PSQL_PWD,
+        #     HUB_PSQL_HOST,
+        #     HUB_PSQL_PORT,
+        #     HUB_PSQL_DB
+        # ))
         if HUB_ENV == "test":
             Base.metadata.drop_all(self.__engine)
 
