@@ -8,6 +8,7 @@ from models.event import Event
 from api.v1.routes import app_routes
 from flask import jsonify, abort, request
 from werkzeug.utils import secure_filename
+from uuid import uuid4
 
 
 @app_routes.route("/events", strict_slashes=False)
@@ -58,7 +59,7 @@ def create_event():
     missing_attributes = [
         attr for attr in required_attributes if attr not in data]
     if image_file is None:
-        missing_attributes.append('images')
+        missing_attributes.append('image')
     if missing_attributes:
         return jsonify({"status": "error", "message": f"Missing an attributes: {','.join(missing_attributes)}"})
 
@@ -71,21 +72,20 @@ def create_event():
         "topic": html.escape(data.get("topic", "")),
         "description": html.escape(data.get("description", "")),
         "organisation_id": html.escape(data.get("organisation_id", ""))
-
     }
 
     # validate data
-    if not re.match(r"\d{4}-\d{2}-\d{2}$", data.get("date", "")):
+    if not re.match(r"\d{4}-\d{2}-\d{2}$", cleaned_data.get("date", "")):
         return jsonify({"status": "error", "message": "Invalid date format"}), 400
 
     # Validate time format (HH:MM:SS)
     for time_field in ["start_time", "end_time"]:
-        if not re.match(r"\d{2}:\d{2}:\d{2}$", data.get(time_field, "")):
+        if not re.match(r"\d{2}:\d{2}:\d{2}$", cleaned_data.get(time_field, "")):
             return jsonify({"status": "error", "message": f"Invalid {time_field} format"}), 400
 
     # Validate number_tickets is a positive integer
     try:
-        num_tickets = int(data.get("number_tickets", ""))
+        num_tickets = int(cleaned_data.get("number_tickets", ""))
         if num_tickets <= 0:
             return jsonify({"status": "error", "message": "Number of tickets must be a positive integer"}), 400
     except ValueError:
@@ -94,9 +94,10 @@ def create_event():
     # save the uploaded image file
     if image_file:
         filename = secure_filename(image_file.filename)
-        image_path = os.path.join("", filename)
+        filename = f"{str(uuid4()).replace('-', '_')}_{filename}"
+        image_path = os.path.join("uploads", filename)
         image_file.save(image_path)
-        data["image"] = image_path
+        cleaned_data["image"] = image_path
 
     new_event = Event(**cleaned_data)
     # print(new_event)
