@@ -1,3 +1,9 @@
+#Uploaded files
+*/uploads/*
+
+# Keep these folders
+!*/**/.gitkeep
+
 # Logs
 logs
 *.log
