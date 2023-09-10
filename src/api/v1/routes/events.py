@@ -9,14 +9,19 @@ from api.v1.routes import app_routes
 from flask import jsonify, abort, request
 from werkzeug.utils import secure_filename
 from uuid import uuid4
+import json
 
 
 @app_routes.route("/events", strict_slashes=False)
 def index():
     "Get all events"
     events = storage.all(Event)
-    all_events = [event.to_dict() for event in events]
-    return jsonify({"data": all_events}), 200
+    all_events = {
+        'data': [event.to_dict()for event in events],
+        'status': 'success'
+    }
+
+    return json.dumps(all_events, default=str, indent=4), 200
 
 
 @app_routes.route("/events/<id>", strict_slashes=False)
@@ -26,7 +31,8 @@ def get_event(id):
     event = storage.get(Event, id)
     if event is None:
         abort(404)
-    return jsonify({"status": "success", "data": event.to_dict()}), 200
+    event = {"status": "success", "data": event.to_dict()}
+    return json.dumps(event, default=str, indent=4), 200
 
 
 @app_routes.route("/events/search", strict_slashes=False)
@@ -97,7 +103,7 @@ def create_event():
         filename = f"{str(uuid4()).replace('-', '_')}_{filename}"
         image_path = os.path.join("uploads", filename)
         image_file.save(image_path)
-        cleaned_data["image"] = image_path
+        cleaned_data["image"] = filename
 
     new_event = Event(**cleaned_data)
     # print(new_event)
