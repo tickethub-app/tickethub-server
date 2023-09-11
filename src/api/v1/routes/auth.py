@@ -33,7 +33,7 @@ def login():
         if auth_token:
             responseObj = {'status': 'success',
                            'message': 'successfully logged in',
-                           'auth_token': auth_token.decode()}
+                           'auth_token': str(auth_token)}
             return jsonify(responseObj), 200
     except Exception as e:
         print(e)
