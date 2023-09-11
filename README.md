@@ -7,4 +7,4 @@ Tickethub app backend
 2. For the database you need to have the postgres database
 2. Install flask, sqlalchemy, psyco2, dotenv, pyjwt
     2.1 pip install python-dotenv
-    2.2 pip install jwt
+    2.2 pip install pyjwt
