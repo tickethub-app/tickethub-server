@@ -3,7 +3,7 @@ import html , os , re
 from datetime import datetime, time
 from models import storage
 from models.event import Event
-from api.v1.routes import app_routes
+from api.v1.routes import app_routes, token_required
 from flask import jsonify , abort , request
 from werkzeug.utils import secure_filename
 
@@ -41,6 +41,7 @@ def search_events():
 
 
 @app_routes.route("/events", methods=["POST"], strict_slashes=False)
+@token_required
 def create_event():
     """Create a new event"""
     data = request.form.to_dict()
@@ -100,11 +101,13 @@ def create_event():
 
 @app_routes.route("/events/<id>", method=["PUT"],
                     strict_slashes=False)
+@token_required
 def update_event(id):
     """Updates  event"""
     return jsonify({})
 
 @app_routes.route("/events/<id>", method=["DELETE"])
+@token_required
 def delete_event(id):
     """Delete event"""
     return jsonify({})
