@@ -1,14 +1,17 @@
 #!/usr/bin/python3
 """Routes for the organisation endpoint"""
+import jwt
 from models import storage
 from models.organisation import Organisation
 from api.v1.routes import app_routes
 from flask import jsonify, abort, request
 from sqlalchemy.exc import IntegrityError
 from hashlib import md5
-
+from functools import wraps
+from api.v1.routes import token_required
 
 @app_routes.route("/organisations", strict_slashes=False)
+@token_required
 def all_organisations():
     """Gets all organisation"""
     organisations = storage.all(Organisation)

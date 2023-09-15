@@ -35,6 +35,11 @@ def login():
                            'message': 'successfully logged in',
                            'auth_token': str(auth_token)}
             return jsonify(responseObj), 200
+        responseObject = {
+                    'status': 'fail',
+                    'message': 'User does not exist.'
+                }
+        return jsonify(responseObject), 404
     except Exception as e:
         print(e)
         responseObj = {'status': 'error', 'message': 'Try again'}
